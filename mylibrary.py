@@ -953,3 +953,20 @@ def poly_fit(xlist, ylist, basis):
     rhs = basis(xlist) @ ylist.T
     par = np.linalg.inv(lhs)@rhs
     return par, np.linalg.cond(lhs)
+
+#----------------------------------------------------------------------------------------------------
+#pRNG codes
+
+def rejection_sampling(N, p, g, a=2, g_sigma=3):
+    samples = []
+    count_accepted = 0
+
+    while len(samples) < N:
+        x = np.random.normal(0, g_sigma)
+        u = np.random.uniform(0, 1)
+        if u < p(x, a) / (g(x, sigma=g_sigma) * (a**2 / 2)):
+            samples.append(x)
+            count_accepted += 1
+
+    success_probability = count_accepted / (len(samples) + (count_accepted - len(samples)))
+    return samples, success_probability
